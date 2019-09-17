@@ -7,7 +7,7 @@ module SolidusPaypalBraintree
     include ActiveModel::Model
 
     validate do
-      errors.add("Address", "is invalid") if address && !address.valid?
+      errors.add("Address", "is invalid") if import_address? && address && !address.valid?
 
       if !transaction.valid?
         transaction.errors.each do |field, error|
@@ -22,6 +22,10 @@ module SolidusPaypalBraintree
     def initialize(order, transaction)
       @order = order
       @transaction = transaction
+    end
+
+    def import_address?
+      true
     end
 
     def source
@@ -39,7 +43,7 @@ module SolidusPaypalBraintree
       if valid?
         order.email = user.try!(:email) || transaction.email
 
-        if address
+        if import_address? && address
           order.shipping_address = order.billing_address = address
           # work around a bug in most solidus versions
           # about tax zone cachine between address changes
