@@ -1,5 +1,9 @@
 class SolidusPaypalBraintree::Configuration < Spree::Base
+  # https://developer.paypal.com/docs/archive/checkout/how-to/customize-button/
+
   PAYPAL_BUTTON_PREFERENCES = {
+    # https://developer.paypal.com/docs/archive/checkout/reference/supported-locales/
+    locale: { availables: %w[en_US it_IT es_ES fr_FR de_DE], default: 'it_IT' },
     color: { availables: %w[gold blue silver white black], default: 'white' },
     size: { availables: %w[small medium large responsive], default: 'small' },
     shape: { availables: %w[pill rect], default: 'rect' },
