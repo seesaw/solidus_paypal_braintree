@@ -8,7 +8,8 @@ class SolidusPaypalBraintree::Configuration < Spree::Base
     size: { availables: %w[small medium large responsive], default: 'small' },
     shape: { availables: %w[pill rect], default: 'rect' },
     label: { availables: %w[checkout credit pay buynow paypal installment], default: 'checkout' },
-    tagline: { availables: %w[true false], default: 'false' }
+    tagline: { availables: %w[true false], default: 'false' },
+    fundingicons: { availables: %w[true false], default: 'true' }
   }
 
   belongs_to :store, class_name: 'Spree::Store'

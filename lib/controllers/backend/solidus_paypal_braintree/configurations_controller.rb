@@ -34,7 +34,8 @@ module SolidusPaypalBraintree
         :preferred_paypal_button_size,
         :preferred_paypal_button_shape,
         :preferred_paypal_button_label,
-        :preferred_paypal_button_tagline
+        :preferred_paypal_button_tagline,
+        :preferred_paypal_button_fundingicons
       ])
     end
   end
