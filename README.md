@@ -43,10 +43,10 @@ Payment methods can accept preferences either directly entered in admin, or from
     config.static_model_preferences.add(
       SolidusPaypalBraintree::Gateway,
       'braintree_credentials', {
-        environment: Rails.env.production? ? 'production' : 'sandbox',
-        merchant_id: ENV['BRAINTREE_MERCHANT_ID'],
-        public_key: ENV['BRAINTREE_PUBLIC_KEY'],
-        private_key: ENV['BRAINTREE_PRIVATE_KEY'],
+        environment: ENV.fetch('BRAINTREE_ENVIRONMENT'), # production or sandhox (braintree)
+        merchant_id: ENV.fetch('BRAINTREE_MERCHANT_ID'),
+        public_key: ENV.fetch('BRAINTREE_PUBLIC_KEY'),
+        private_key: ENV.fetch('BRAINTREE_PRIVATE_KEY'),
         paypal_flow: 'vault', # 'checkout' is accepted too
       }
     )

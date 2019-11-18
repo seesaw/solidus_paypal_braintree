@@ -6,7 +6,7 @@
   var paypalOptions = {
     flow: 'vault',
     enableShippingAddress: true,
-    environment: '<%= Rails.env.production? ? "production" : "sandbox" %>'
+    environment: "<%= ENV.fetch('BRAINTREE_ENVIRONMENT') %>" // production or sandbox (paypal)
   }
   var options = {
     restart_checkout: true
