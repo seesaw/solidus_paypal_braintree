@@ -39,7 +39,7 @@ Payment methods can accept preferences either directly entered in admin, or from
 1. Set static preferences in an initializer
   ```ruby
   # config/initializers/spree.rb
-  Spree::Config.configure do |config|
+  Spree::Config.config do |config|
     config.static_model_preferences.add(
       SolidusPaypalBraintree::Gateway,
       'braintree_credentials', {
@@ -73,7 +73,7 @@ SolidusPaypalBraintree::Gateway.new(
 ```
 
 ### Configure payment types
-Your payment method can accept payments in three ways: through Paypal, through ApplePay, or with credit card details entered directly by the customer. By default all are disabled for all your site's stores.
+Your payment method can accept payments in three ways: through Paypal, through ApplePay, or with credit card details entered directly by the customer. By default all are disabled for all your site's stores. Before proceeding to checkout, ensure you've created a Braintree configuration for your store:
 
 1. Visit /solidus_paypal_braintree/configurations/list
 
@@ -123,8 +123,8 @@ The following is a relatively bare-bones implementation to enable Apple Pay on t
       amount: "<%= current_order.total %>",
       shippingContact: {
         emailAddress: '<%= current_order.email %>',
-        familyName: '<%= address.firstname %>',
-        givenName: '<%= address.lastname %>',
+        givenName: '<%= address.firstname %>',
+        familyName: '<%= address.lastname %>',
         phoneNumber: '<%= address.phone %>',
         addressLines: ['<%= address.address1 %>','<%= address.address2 %>'],
         locality: '<%= address.city %>',
@@ -153,34 +153,32 @@ It will only be displayed if the `SolidusPaypalBraintree::Gateway` payment
 method is configured to display on the frontend and PayPal is enabled in the
 store's configuration.
 
+You can find button configuration options in 
+`/solidus_paypal_braintree/configurations/list` if you want to change the color,
+shape, layout, and a few other options. Keep in mind that the `paypal_button_tagline`
+does not work when the `paypal_button_layout` is set to `vertical`, and will be
+ignored in that case.
+
 The checkout view
 [initializes the PayPal button](/lib/views/frontend/spree/checkout/payment/_paypal_braintree.html.erb)
 using the
 [Vault flow](https://developers.braintreepayments.com/guides/paypal/overview/javascript/v3),
-which allows the source to be reused. If you want, you can use [Checkout with PayPal](https://developers.braintreepayments.com/guides/paypal/checkout-with-paypal/javascript/v3)
+which allows the source to be reused. Please note that PayPal messaging is disabled with vault flow. If you want, you can use [Checkout with PayPal](https://developers.braintreepayments.com/guides/paypal/checkout-with-paypal/javascript/v3)
 instead, which doesn't allow you to reuse sources but allows your customers to pay with their PayPal
-balance (see setup instructions).
+balance and with PayPal financing options ([see setup instructions](#create-a-new-payment-method)).
 
 If you are creating your own checkout view or would like to customize the
 [options that get passed to tokenize](https://braintree.github.io/braintree-web/3.6.3/PayPal.html#tokenize)
-, you can initialize your own using the `PaypalButton` JS object:
+, you can initialize your own using the `CreatePaypalButton` JS object:
 
 ```javascript
-var button = new PaypalButton(document.querySelector("#your-button-id"));
-
-button.initialize({
+var paypalOptions = {
   // your configuration options here
-});
-```
+}
 
-After successful tokenization, a callback function is invoked that submits the
-transaction via AJAX and advances the order to confirm. It is possible to provide
-your own callback function to customize the behaviour after tokenize as follows:
+var button = new SolidusPaypalBraintree.createPaypalButton(document.querySelector("#your-button-id"), paypalOptions);
 
-```javascript
-var button = new PaypalButton(document.querySelector("#your-button-id"));
-
-button.setTokenizeCallback(your-callback);
+button.initialize();
 ```
 
 ### Express checkout from the cart
@@ -189,6 +187,17 @@ A PayPal button can also be included on the cart view to enable express checkout
 ```ruby
 render "spree/shared/paypal_cart_button"
 ```
+
+### PayPal Financing Messaging
+
+PayPal offers an [on-site messaging component](https://www.paypal.com/us/webapps/mpp/on-site-messaging) to notify the customer that there are financing options available. This component is included in both the cart and checkout partials, but is disabled by default. To enable this option, you'll need to use the `checkout` flow, and set the `paypal button messaging` option to `true` in your Braintree configuration.
+
+You can also include this view partial to implement this messaging component anywhere - for instance, on the product page:
+```ruby
+render "spree/shared/paypal_messaging, options: {total: @product.price, placement: "product", currency: 'USD'}"
+```
+
+While we provide the messaging component on the payment buttons for cart and checkout, you're expected to move these to where they make the most sense for your frontend. PayPal recommends keeping the messaging directly below wherever the order or product total is located.
 
 #### PayPal configuration
 
@@ -211,7 +220,12 @@ This preference allows users to provide different Merchant Account Ids for
 different currencies. If you only plan to accept payment in one currency, the
 defaut Merchant Account Id will be used and you can omit this option.
 An example of setting this preference can be found
-[here](https://github.com/solidusio/solidus_paypal_braintree/blob/master/spec/spec_helper.rb#L70-L72).
+[here](https://github.com/solidusio/solidus_paypal_braintree/blob/bf5fe0e154d38f7c498f1c54450bb4de7608ff04/spec/support/gateway_helpers.rb#L11-L13).
+
+In addition to this, you can also specify different PayPal accounts for each
+currency by using the `paypal_payee_email_map` preference. If you only want
+to use one PayPal account for all currencies, then you can ignore this option.
+You can find an example of setting this preference [here](https://github.com/solidusio/solidus_paypal_braintree/blob/bf5fe0e154d38f7c498f1c54450bb4de7608ff04/spec/support/gateway_helpers.rb#L14-L16).
 
 ### Default store configuration
 The migrations for this gem will add a default configuration to all stores that
@@ -220,8 +234,32 @@ has each payment type disabled. It also adds a `before_create` callback to
 default configuration that gets created by overriding the private
 `build_default_configuration` method on `Spree::Store`.
 
+### Hosted Fields Styling
+You can style the Braintree credit card fields by using the `credit_card_fields_style` preference on the payment method. The `credit_card_fields_style` will be passed to the `style` key when initializing the credit card fields. You can find more information about styling hosted fields can be found [here.](https://developers.braintreepayments.com/guides/hosted-fields/styling/javascript/v3)
+
+You can also use the `placeholder_text` preference on the payment method to set the placeholder text you'd like to use for each of the hosted fields. You'll pass the field name in as the key, and the placeholder text you'd like to use as the value. For example:
+```ruby
+  { number: "Enter card number", cvv: "Enter CVV", expirationDate: "mm/yy" }
+```
+
+### 3D Secure
+
+This gem supports [3D Secure 2](https://developers.braintreepayments.com/guides/3d-secure/overview),
+which satisfies the [Strong Customer Authentication (SCA)](https://www.braintreepayments.com/blog/getting-up-to-speed-on-psd2-regulation-2/)
+requirements introduced by PSD2.
+
+3D Secure can be enabled from Solidus Admin -> Braintree (left-side menu) ->
+tick _3D Secure_ checkbox.
+
+Once enabled, you can use the following card numbers to test 3DS 2 on your
+client side in sandbox:
+https://developers.braintreepayments.com/guides/3d-secure/migration/javascript/v3#client-side-sandbox-testing.
+
 Testing
 -------
+
+To run the specs it is required to set the Braintree test account data in these environment variables:
+`BRAINTREE_PUBLIC_KEY`, `BRAINTREE_PRIVATE_KEY`, `BRAINTREE_MERCHANT_ID` and `BRAINTREE_PAYPAL_PAYEE_EMAIL`
 
 First bundle your dependencies, then run `rake`. `rake` will default to building the dummy app if it does not exist, then it will run specs, and [Rubocop](https://github.com/bbatsov/rubocop) static code analysis. The dummy app can be regenerated by using `rake test_app`.
 
@@ -237,4 +275,4 @@ Simply add this require statement to your spec_helper:
 require 'solidus_paypal_braintree/factories'
 ```
 
-Copyright (c) 2016 Stembolt, released under the New BSD License
+Copyright (c) 2016-2020 Stembolt and others contributors, released under the New BSD License

@@ -1,249 +1,68 @@
-# Relaxed.Ruby.Style
+require:
+  - solidus_dev_support/rubocop
 
 AllCops:
-  Exclude:
-    - 'solidus_paypal_braintree.gemspec'
-    - 'spec/dummy/**/*'
-    - 'vendor/bundle/**/*'
-  TargetRubyVersion: 2.1
+  NewCops: enable
+  TargetRubyVersion: 2.4
 
-# Sometimes I believe this reads better
-# This also causes spacing issues on multi-line fixes
-Style/BracesAroundHashParameters:
-  Enabled: false
+Layout/FirstArgumentIndentation:
+  EnforcedStyle: consistent
 
-# We use class vars and will have to continue doing so for compatability
-Style/ClassVars:
-  Enabled: false
+Layout/FirstArrayElementIndentation:
+  EnforcedStyle: consistent
 
-# We need these names for backwards compatability
-Naming/PredicateName:
-  Enabled: false
-
-Naming/AccessorMethodName:
-  Enabled: false
-
-# This has been used for customization
-Style/MutableConstant:
-  Enabled: false
-
-Style/ClassAndModuleChildren:
-  Enabled: false
-
-Style/GuardClause:
-  Enabled: false
-
-Style/WordArray:
-  Enabled: false
-
-Style/ConditionalAssignment:
-  Enabled: false
-
-Performance/Count:
-  Enabled: false
-
-Style/RaiseArgs:
-  Enabled: false
-
-Naming/BinaryOperatorParameterName:
-  Enabled: false
-
-# We can use good judgement here
-Style/RegexpLiteral:
-  Enabled: false
-
-# Unicode comments are useful
-Style/AsciiComments:
-  Enabled: false
-
-Layout/EndAlignment:
-  Enabled: false
-
-Layout/ElseAlignment:
-  Enabled: false
-
-Layout/IndentationWidth:
-  Enabled: false
-
-Layout/AlignParameters:
-  Enabled: false
-
-Layout/ClosingParenthesisIndentation:
-  Enabled: false
+Layout/FirstHashElementIndentation:
+  EnforcedStyle: consistent
 
 Layout/MultilineMethodCallIndentation:
+  EnforcedStyle: indented
+
+# We use this extensively, the alternatives are not viable or desirable.
+RSpec/AnyInstance:
   Enabled: false
 
-Layout/IndentArray:
+# No need to make the code more complex for no real gain.
+RSpec/MessageSpies:
   Enabled: false
 
-Layout/IndentHash:
+# Let's consider legitimate to have multiple expectations within an example.
+RSpec/MultipleExpectations:
   Enabled: false
 
-Layout/AlignHash:
+# Allow to use subject as is, no big deal.
+RSpec/NamedSubject:
   Enabled: false
 
-# From http://relaxed.ruby.style/
+# Let's set this to some really exagerate value.
+RSpec/NestedGroups:
+  Max: 8
 
-Style/Alias:
-  Enabled: false
-  StyleGuide: http://relaxed.ruby.style/#stylealias
+RSpec/VerifiedDoubles:
+  # Sometimes you really need an "anything" double
+  IgnoreSymbolicNames: true
 
-Style/BeginBlock:
-  Enabled: false
-  StyleGuide: http://relaxed.ruby.style/#stylebeginblock
-
-Style/BlockDelimiters:
-  Enabled: false
-  StyleGuide: http://relaxed.ruby.style/#styleblockdelimiters
-
-Style/Documentation:
-  Enabled: false
-  StyleGuide: http://relaxed.ruby.style/#styledocumentation
-
-Layout/DotPosition:
-  Enabled: false
-  StyleGuide: http://relaxed.ruby.style/#styledotposition
-
-Style/DoubleNegation:
-  Enabled: false
-  StyleGuide: http://relaxed.ruby.style/#styledoublenegation
-
-Style/EndBlock:
-  Enabled: false
-  StyleGuide: http://relaxed.ruby.style/#styleendblock
-
-Style/FormatString:
-  Enabled: false
-  StyleGuide: http://relaxed.ruby.style/#styleformatstring
-
-Style/IfUnlessModifier:
-  Enabled: false
-  StyleGuide: http://relaxed.ruby.style/#styleifunlessmodifier
-
-Style/Lambda:
-  Enabled: false
-  StyleGuide: http://relaxed.ruby.style/#stylelambda
-
-Style/ModuleFunction:
-  Enabled: false
-  StyleGuide: http://relaxed.ruby.style/#stylemodulefunction
-
-Style/MultilineBlockChain:
-  Enabled: false
-  StyleGuide: http://relaxed.ruby.style/#stylemultilineblockchain
-
-Style/NegatedIf:
-  Enabled: false
-  StyleGuide: http://relaxed.ruby.style/#stylenegatedif
-
-Style/NegatedWhile:
-  Enabled: false
-  StyleGuide: http://relaxed.ruby.style/#stylenegatedwhile
-
-Style/ParallelAssignment:
-  Enabled: false
-  StyleGuide: http://relaxed.ruby.style/#styleparallelassignment
-
-Style/PercentLiteralDelimiters:
-  Enabled: false
-  StyleGuide: http://relaxed.ruby.style/#stylepercentliteraldelimiters
-
-Style/PerlBackrefs:
-  Enabled: false
-  StyleGuide: http://relaxed.ruby.style/#styleperlbackrefs
-
-Style/Semicolon:
-  Enabled: false
-  StyleGuide: http://relaxed.ruby.style/#stylesemicolon
-
-Style/SignalException:
-  Enabled: false
-  StyleGuide: http://relaxed.ruby.style/#stylesignalexception
-
-Style/SingleLineBlockParams:
-  Enabled: false
-  StyleGuide: http://relaxed.ruby.style/#stylesinglelineblockparams
-
-Style/SingleLineMethods:
-  Enabled: false
-  StyleGuide: http://relaxed.ruby.style/#stylesinglelinemethods
-
-Layout/SpaceBeforeBlockBraces:
-  Enabled: false
-  StyleGuide: http://relaxed.ruby.style/#stylespacebeforeblockbraces
-
-Layout/SpaceInsideParens:
-  Enabled: false
-  StyleGuide: http://relaxed.ruby.style/#stylespaceinsideparens
-
-Style/SpecialGlobalVars:
-  Enabled: false
-  StyleGuide: http://relaxed.ruby.style/#stylespecialglobalvars
-
-Style/StringLiterals:
-  Enabled: false
-  StyleGuide: http://relaxed.ruby.style/#stylestringliterals
-
-Style/SymbolArray:
-  Enabled: false
-
-Style/SymbolProc:
-  Enabled: false
-
-Style/WhileUntilModifier:
-  Enabled: false
-  StyleGuide: http://relaxed.ruby.style/#stylewhileuntilmodifier
-
-Lint/AmbiguousRegexpLiteral:
-  Enabled: false
-  StyleGuide: http://relaxed.ruby.style/#lintambiguousregexpliteral
-
-Lint/AssignmentInCondition:
-  Enabled: false
-  StyleGuide: http://relaxed.ruby.style/#lintassignmentincondition
-
-Lint/HandleExceptions:
+Style/FrozenStringLiteralComment:
   Exclude:
-    - 'Rakefile'
+    - spec/**/*
+    - db/migrate/**/*
+    - bin/**/*
 
-Metrics/AbcSize:
-  Enabled: false
-
-Metrics/BlockNesting:
-  Enabled: false
-
-Metrics/BlockLength:
+Style/ExplicitBlockArgument:
   Exclude:
-    - 'spec/**/*.rb'
+    - lib/solidus_paypal_braintree/request_protection.rb
 
-Metrics/ClassLength:
-  Enabled: false
-
-Metrics/ModuleLength:
-  Enabled: false
-
-Metrics/CyclomaticComplexity:
-  Enabled: false
-
-Metrics/LineLength:
-  Enabled: false
-
-Metrics/MethodLength:
-  Enabled: false
-
-Metrics/ParameterLists:
-  Enabled: false
-
-Metrics/PerceivedComplexity:
-  Enabled: false
-
-Bundler/OrderedGems:
-  Enabled: false
-
-Bundler/DuplicatedGem:
-  Enabled: false
-
-AmbiguousBlockAssociation:
+Rails/SkipsModelValidations:
   Exclude:
-    - "spec/**/*.rb"
+    - db/migrate/**/*
+
+Rails/ReflectionClassName:
+  Exclude:
+    - app/models/solidus_paypal_braintree/customer.rb
+    - app/models/solidus_paypal_braintree/source.rb
+
+RSpec/MultipleMemoizedHelpers:
+  Exclude:
+    - spec/models/solidus_paypal_braintree/transaction_import_spec.rb
+    - spec/models/solidus_paypal_braintree/response_spec.rb
+    - spec/models/solidus_paypal_braintree/gateway_spec.rb
+    - spec/controllers/solidus_paypal_braintree/client_tokens_controller_spec.rb

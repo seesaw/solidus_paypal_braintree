@@ -1,7 +1,11 @@
+# frozen_string_literal: true
+
 require 'solidus_core'
+require 'solidus_paypal_braintree/version'
 require 'solidus_paypal_braintree/engine'
 require 'solidus_paypal_braintree/country_mapper'
 require 'solidus_paypal_braintree/request_protection'
+require 'solidus_support'
 
 require_relative '../app/models/solidus_paypal_braintree/response'
 
