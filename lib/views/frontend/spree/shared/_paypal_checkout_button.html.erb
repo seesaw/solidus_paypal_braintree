@@ -21,7 +21,7 @@
       <% if paypal_button_preference(:paypal_button_layout, store: current_store) == "horizontal" %>
         tagline: '<%= paypal_button_preference(:paypal_button_tagline, store: current_store) %>',
       <% end %>
-      messaging: '<%= paypal_button_preference(:paypal_button_messaging, store: current_store) %>'
+      messaging: '<%= paypal_button_preference(:paypal_button_messaging, store: current_store) %>',
       fundingicons: '<%= paypal_button_preference(:paypal_button_fundingicons, store: current_store) %>'
     }
   }
