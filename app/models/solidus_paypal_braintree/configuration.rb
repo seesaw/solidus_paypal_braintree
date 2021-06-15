@@ -17,6 +17,10 @@ module SolidusPaypalBraintree
       messaging: { availables: %w[true false], default: 'false' }
     }
 
+    unless respond_to?(:preference)
+      include ::Spree::Preferences::Persistable
+    end
+
     belongs_to :store, class_name: 'Spree::Store'
 
     validates :store, presence: true
